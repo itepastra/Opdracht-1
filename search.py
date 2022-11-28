@@ -73,6 +73,19 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return [s, s, w, s, w, w, s, w]
 
+def genericSearch(dataStruct, problem:SearchProblem):
+    dataStruct.push((problem.getStartState(), [], [], 0))
+
+    while not dataStruct.isEmpty():
+        (state, prev, ops, cost) = dataStruct.pop()
+        if problem.isGoalState(state):
+            return ops
+        else:
+            for (succ, operation, extracost) in problem.getSuccessors(state):
+                if succ not in prev:
+                    dataStruct.push(
+                        (succ, prev + [succ], ops + [operation], cost+extracost))
+    return
 
 def depthFirstSearch(problem: SearchProblem):
     """
@@ -90,19 +103,8 @@ def depthFirstSearch(problem: SearchProblem):
     """
     from util import Stack
     stack = Stack()
-    stack.push((problem.getStartState(), [], [], 0))
+    return genericSearch(stack, problem)
 
-    while not stack.isEmpty():
-        (state, prev, ops, cost) = stack.pop()
-        if problem.isGoalState(state):
-            return ops
-        else:
-            for (succ, operation, extracost) in problem.getSuccessors(state):
-                if succ not in prev:
-                    stack.push((succ, prev + [succ], ops + [operation], cost+extracost))
-    return
-
-    # util.raiseNotDefined()
 
 
 def breadthFirstSearch(problem: SearchProblem):
@@ -110,17 +112,8 @@ def breadthFirstSearch(problem: SearchProblem):
 
     from util import Queue
     queue = Queue()
-    queue.push((problem.getStartState(), [], [], 0))
-
-    while not queue.isEmpty():
-        (state, prev, ops, cost) = queue.pop()
-        if problem.isGoalState(state):
-            return ops
-        else:
-            for (succ, operation, extracost) in problem.getSuccessors(state):
-                if succ not in prev:
-                    queue.push((succ, prev + [succ], ops + [operation], cost+extracost))
-    return
+    return genericSearch(queue, problem)
+    
 
 
 def uniformCostSearch(problem: SearchProblem):
@@ -130,18 +123,7 @@ def uniformCostSearch(problem: SearchProblem):
     queue = PriorityQueueWithFunction(
         (lambda i: i[3])
     )
-    queue.push((problem.getStartState(), [], [], 0))
-
-    while not queue.isEmpty():
-        (state, prev, ops, cost) = queue.pop()
-        if problem.isGoalState(state):
-            return ops
-        else:
-            for (succ, operation, extracost) in problem.getSuccessors(state):
-                if succ not in prev:
-                    queue.push(
-                        (succ, prev + [succ], ops + [operation], cost+extracost))
-    return
+    return genericSearch(queue, problem)
 
 
 def nullHeuristic(state, problem=None):
@@ -154,8 +136,11 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueueWithFunction
+    queue = PriorityQueueWithFunction(
+        (lambda i: i[3] + heuristic(i[0], problem))
+    )
+    return genericSearch(queue, problem)
 
 
 # Abbreviations
