@@ -73,18 +73,40 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return [s, s, w, s, w, w, s, w]
 
-def genericSearch(dataStruct, problem:SearchProblem):
-    dataStruct.push((problem.getStartState(), [], [], 0))
+def dls(dataStruct, problem:SearchProblem):
+    startState = problem.getStartState()
+    dataStruct.push((startState, [], 0))
+    prev = set(startState)
 
     while not dataStruct.isEmpty():
-        (state, prev, ops, cost) = dataStruct.pop()
+        (state,  ops, cost) = dataStruct.pop()
+        prev.add(state)
         if problem.isGoalState(state):
             return ops
-        else:
-            for (succ, operation, extracost) in problem.getSuccessors(state):
-                if succ not in prev:
-                    dataStruct.push(
-                        (succ, prev + [succ], ops + [operation], cost+extracost))
+        for (succ, operation, extracost) in problem.getSuccessors(state):
+            if not succ in prev:
+                dataStruct.push(
+                    (succ, ops + [operation], cost+extracost))
+                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (dataStruct.getList())]}")
+    return
+
+
+def bls(dataStruct, problem:SearchProblem):
+    startState = problem.getStartState()
+    dataStruct.push((startState, [], 0))
+    prev = set(startState)
+
+    while not dataStruct.isEmpty():
+        (state,  ops, cost) = dataStruct.pop()
+        if problem.isGoalState(state):
+            return ops
+        for (succ, operation, extracost) in problem.getSuccessors(state):
+            if not succ in prev:
+                if not problem.isGoalState(succ):
+                    prev.add(succ)
+                dataStruct.push(
+                    (succ, ops + [operation], cost+extracost))
+                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (dataStruct.getList())]}")
     return
 
 def depthFirstSearch(problem: SearchProblem):
@@ -101,29 +123,26 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    from util import Stack
-    stack = Stack()
-    return genericSearch(stack, problem)
+    stack = util.Stack()
+    return dls(stack, problem)
 
 
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
 
-    from util import Queue
-    queue = Queue()
-    return genericSearch(queue, problem)
+    queue = util.Queue()
+    return bls(queue, problem)
     
 
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
 
-    from util import PriorityQueueWithFunction
-    queue = PriorityQueueWithFunction(
-        (lambda i: i[3])
+    queue = util.PriorityQueueWithFunction(
+        (lambda i: i[2])
     )
-    return genericSearch(queue, problem)
+    return bls(queue, problem)
 
 
 def nullHeuristic(state, problem=None):
@@ -136,11 +155,10 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    from util import PriorityQueueWithFunction
-    queue = PriorityQueueWithFunction(
-        (lambda i: i[3] + heuristic(i[0], problem))
+    queue = util.PriorityQueueWithFunction(
+        (lambda i: i[2] + heuristic(i[0], problem))
     )
-    return genericSearch(queue, problem)
+    return bls(queue, problem)
 
 
 # Abbreviations
