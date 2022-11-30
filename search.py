@@ -17,8 +17,9 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+from typing import List
 import util
-
+from game import Directions
 
 class SearchProblem:
     """
@@ -28,13 +29,13 @@ class SearchProblem:
     You do not need to change anything in this class, ever.
     """
 
-    def getStartState(self):
+    def getStartState(self) -> any:
         """
         Returns the start state for the search problem.
         """
         util.raiseNotDefined()
 
-    def isGoalState(self, state):
+    def isGoalState(self, state) -> bool:
         """
           state: Search state
 
@@ -42,7 +43,7 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-    def getSuccessors(self, state):
+    def getSuccessors(self, state) -> List[tuple]:
         """
           state: Search state
 
@@ -68,48 +69,53 @@ def tinyMazeSearch(problem):
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
     sequence of moves will be incorrect, so only use this for tinyMaze.
     """
-    from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
     return [s, s, w, s, w, w, s, w]
 
-def dls(dataStruct, problem:SearchProblem):
-    startState = problem.getStartState()
-    dataStruct.push((startState, [], 0))
-    prev = set(startState)
+def dls(data_struct:util.DataStructure, problem:SearchProblem) -> List:
+    """
+    Performs a depth-first-like search using a dataStruct which contains push, pop and isEmpty methods
+    """
+    start_state = problem.getStartState()
+    data_struct.push((start_state, [], 0))
+    prev = set(start_state)
 
-    while not dataStruct.isEmpty():
-        (state,  ops, cost) = dataStruct.pop()
+    while not data_struct.isEmpty():
+        (state,  ops, cost) = data_struct.pop()
         prev.add(state)
         if problem.isGoalState(state):
             return ops
         for (succ, operation, extracost) in problem.getSuccessors(state):
             if not succ in prev:
-                dataStruct.push(
+                data_struct.push(
                     (succ, ops + [operation], cost+extracost))
-                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (dataStruct.getList())]}")
-    return
+                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
+    return []
 
 
-def bls(dataStruct, problem:SearchProblem):
-    startState = problem.getStartState()
-    dataStruct.push((startState, [], 0))
-    prev = set(startState)
+def bls(data_struct:util.DataStructure, problem:SearchProblem) -> List:
+    """
+    Performs a depth-first-like search using a dataStruct
+    """
+    start_state = problem.getStartState()
+    data_struct.push((start_state, [], 0))
+    prev = set(start_state)
 
-    while not dataStruct.isEmpty():
-        (state,  ops, cost) = dataStruct.pop()
+    while not data_struct.isEmpty():
+        (state,  ops, cost) = data_struct.pop()
         if problem.isGoalState(state):
             return ops
         for (succ, operation, extracost) in problem.getSuccessors(state):
             if not succ in prev:
                 if not problem.isGoalState(succ):
                     prev.add(succ)
-                dataStruct.push(
+                data_struct.push(
                     (succ, ops + [operation], cost+extracost))
-                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (dataStruct.getList())]}")
+                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
     return
 
-def depthFirstSearch(problem: SearchProblem):
+def depthFirstSearch(problem: SearchProblem) -> List:
     """
     Search the deepest nodes in the search tree first.
 

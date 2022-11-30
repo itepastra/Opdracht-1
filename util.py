@@ -32,6 +32,7 @@ import sys
 import inspect
 import heapq
 import random
+from typing import List, NoReturn
 
 
 class FixedRandom:
@@ -130,12 +131,25 @@ class FixedRandom:
         self.random.setstate(fixedState)
 
 
-"""
- Data structures useful for implementing SearchAgents
-"""
+
+class DataStructure:
+    """
+    Data structures useful for implementing SearchAgents
+    """
+    def push(self, item):
+        pass
+
+    def pop(self) -> any:
+        pass
+
+    def isEmpty(self) -> bool:
+        pass
+
+    def getList(self) -> List:
+        pass
 
 
-class Stack:
+class Stack(DataStructure):
     "A container with a last-in-first-out (LIFO) queuing policy."
 
     def __init__(self):
@@ -157,7 +171,7 @@ class Stack:
         return (self.list)
 
 
-class Queue:
+class Queue(DataStructure):
     "A container with a first-in-first-out (FIFO) queuing policy."
 
     def __init__(self):
@@ -182,7 +196,7 @@ class Queue:
         return (self.list)
 
 
-class PriorityQueue:
+class PriorityQueue(DataStructure):
     """
       Implements a priority queue data structure. Each inserted item
       has a priority associated with it and the client is usually interested
