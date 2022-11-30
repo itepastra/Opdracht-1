@@ -136,7 +136,7 @@ class DataStructure:
     """
     Data structures useful for implementing SearchAgents
     """
-    def push(self, item):
+    def push(self, item) -> None:
         pass
 
     def pop(self) -> any:
