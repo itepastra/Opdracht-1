@@ -131,19 +131,19 @@ class FixedRandom:
         self.random.setstate(fixedState)
 
 
-
 class DataStructure:
     """
     Data structures useful for implementing SearchAgents
     """
-    def push(self, item) -> None:
-        pass
+
+    def push(self, item: any) -> None:
+        "Add an item to the dataStructure"
 
     def pop(self) -> any:
-        pass
+        "Remove an item from the dataStructure and return it"
 
     def isEmpty(self) -> bool:
-        pass
+        "Check if the datastructure is empty or not"
 
     def getList(self) -> List:
         pass

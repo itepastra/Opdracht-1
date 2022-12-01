@@ -17,7 +17,9 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
-from typing import List
+import queue
+from tokenize import Number
+from typing import List, Tuple
 import util
 from game import Directions
 
@@ -75,7 +77,7 @@ def tinyMazeSearch(problem):
 
 def dls(data_struct:util.DataStructure, problem:SearchProblem) -> List:
     """
-    Performs a depth-first-like search using a dataStruct which contains push, pop and isEmpty methods
+    Performs a depth-first-like search using a dataStruct containing push, pop and isEmpty methods
     """
     start_state = problem.getStartState()
     data_struct.push((start_state, [], 0))
@@ -90,7 +92,7 @@ def dls(data_struct:util.DataStructure, problem:SearchProblem) -> List:
             if not succ in prev:
                 data_struct.push(
                     (succ, ops + [operation], cost+extracost))
-                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
+                # print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
     return []
 
 
@@ -112,7 +114,7 @@ def bls(data_struct:util.DataStructure, problem:SearchProblem) -> List:
                     prev.add(succ)
                 data_struct.push(
                     (succ, ops + [operation], cost+extracost))
-                print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
+                # print (f"currently at {state} pushing {(succ,  cost+extracost)}, the stucture holds {[(succ, cost) for (succ, ops, cost) in (data_struct.getList())]}")
     return
 
 def depthFirstSearch(problem: SearchProblem) -> List:
@@ -151,13 +153,13 @@ def uniformCostSearch(problem: SearchProblem):
     return bls(queue, problem)
 
 
+
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
